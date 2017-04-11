@@ -137,6 +137,30 @@ var pieces = {
   "t3" : [[1,0],[1,1],[1,2],[0,1]]
 };
 
+function randomPieceGenerator(){
+var pieceType= Math.floor(Math.random())*7
+if (pieceType <= 1 === "s0") {
+
+} else if (pieceType <= 2 === "z0") {
+
+}
+else if (pieceType <=3 === "l0") {
+
+}
+else if (pieceType <=4 === "j0") {
+
+}
+else if (pieceType <=5 === "o0") {
+
+}
+else if (pieceType <=6 === "i0")
+}
+else if (pieceType <=7 === "t0"){
+
+}
+return pieceType;
+
+
 $(document).ready(function() {
   tetrisBoardObj = new BoardObj();
   tetrisBoardObj.createBoard();
