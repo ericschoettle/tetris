@@ -35,8 +35,8 @@ function BoardObj() {
 }
 
 
-function gamePiece(type, rotation, xPosition, yPosition) {
-  this.type = type;
+function ActivePiece(type, rotation, xPosition, yPosition) {
+  this.type = "l";
   this.rotation = 0;
   this.xPosition = xPosition;
   this.yPosition = yPosition;
@@ -58,59 +58,26 @@ function gamePiece(type, rotation, xPosition, yPosition) {
     // this.draw
   }
   this.draw = function() {
-
+    var piece = pieces[this.type + this.rotation];
+    for (var i = 0; i < 4; i++) {
+      cellX = piece[i][0] + this.xPosition;
+      cellY = piece[i][1] + this.yPosition;
+      tetrisBoardObj.board["x" + cellX + "y" + cellY].mark(this.type)
+    }
   }
 }
 
 
-  function gamePiece(s,z,l,j,o,i){
-    var s0 = [[0,0][1,0][1,1][2,1]];
-    var z0 = [[0,1][1,1][1,0][2,0]];
-    var l0 = [[0,2][0,1][0,0][1,0]];
-    var j0 = [[1,2][1,1][1,0][0,0]];
-    var o0 = [[0,1][1,1][0,0][1,0]];
-    var i0 = [[0,0][0,1][0,2][0,3]];
-
-    var s1 = [[0,0][1,0][1,1][2,1]];
-    var z1 = [[0,1][1,1][1,0][2,0]];
-    var l1 = [[0,2][0,1][0,0][1,0]];
-    var j1 = [[1,2][1,1][1,0][0,0]];
-    var o1 = [[0,1][1,1][0,0][1,0]];
-    var i1 = [[0,0][0,1][0,2][0,3]];
-
-    var s2 = [[0,0][1,0][1,1][2,1]];
-    var z2 = [[0,1][1,1][1,0][2,0]];
-    var l2 = [[0,2][0,1][0,0][1,0]];
-    var j2 = [[1,2][1,1][1,0][0,0]];
-    var o2 = [[0,1][1,1][0,0][1,0]];
-    var i2 = [[0,0][0,1][0,2][0,3]];
-    
-    var s3 = [[0,0][1,0][1,1][2,1]];
-    var z3 = [[0,1][1,1][1,0][2,0]];
-    var l3 = [[0,2][0,1][0,0][1,0]];
-    var j3 = [[1,2][1,1][1,0][0,0]];
-    var o3 = [[0,1][1,1][0,0][1,0]];
-    var i3 = [[0,0][0,1][0,2][0,3]];
-
-    this.s = s;
-    this.z = z;
-    this.l = l;
-    this.j = j;
-    this.o = o;
-    this.i = i;
-  }
-
-
 $(document).ready(function() {
-  newBoardObj = new BoardObj();
-  newBoardObj.createBoard()
- for (var yIndex = 0; yIndex < newBoardObj.rows; yIndex++) {
-   $("table").append("<tr id='y" + yIndex + "'>")
-   $("table").append("</tr>")
- }
- for (var xIndex = 0; xIndex < newBoardObj.cols; xIndex++) {
-   $("table tr").append("<td id='x" + xIndex + "'>")
- }
+  tetrisBoardObj = new BoardObj();
+  tetrisBoardObj.createBoard()
+  for (var yIndex = 0; yIndex < tetrisBoardObj.rows; yIndex++) {
+    $("table").append("<tr id='y" + yIndex + "'>")
+    $("table").append("</tr>")
+  }
+  for (var xIndex = 0; xIndex < tetrisBoardObj.cols; xIndex++) {
+    $("table tr").append("<td id='x" + xIndex + "'>")
+  }
 
 
 });
