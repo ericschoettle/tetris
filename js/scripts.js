@@ -153,7 +153,7 @@ else if (pieceType <=4 === "j0") {
 else if (pieceType <=5 === "o0") {
 
 }
-else if (pieceType <=6 === "i0")
+else if (pieceType <=6 === "i0"){
 }
 else if (pieceType <=7 === "t0"){
 
