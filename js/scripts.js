@@ -3,17 +3,25 @@ function Cell(xCoord, yCoord) {
   this.name = "x" + xCoord + "y" + yCoord
   this.xCoord = xCoord
   this.yCoord = yCoord
-  this.playerSymbol = NaN
-  this.mark = function(playerSymbol) {
-    this.playerSymbol = playerSymbol
+  this.symbol = ""
+  this.active = "active"
+  this.mark = function(symbol) {
+    this.symbol = symbol
   }
 }
+
+function showBoard(boardObj) {
+  for (var i = 0; i < boardObj.cells; i++) {
+    array[i]
+  }
+}
+
 
 function BoardObj() {
   this.rows = 24;
   this.cols = 10;
   this.board = {};
-  // this.cells = this.rows * this.cols;
+  this.cells = this.rows * this.cols;
   this.createBoard = function() {
     for (var yIndex = 0; yIndex < this.rows; yIndex++) {
       for (var xIndex = 0; xIndex < this.cols; xIndex++) {
@@ -22,11 +30,37 @@ function BoardObj() {
       }
     }
   }
+  this.showBoard = function() {
+    for (cell in this.board) {
+      debugger
+      var y = this.board[cell].yCoord;
+      var x = this.board[cell].xCoord;
+      var table = $("table")[0]
+      console.log(table)
+      // var tableCell = table.rows[0].cells[0];
+      // var tableCelljQuery = $(tableCell)
+      // console.log(tableCell)
+      // console.log(tableCelljQuery)
+
+
+      // $("table tr#" + tr + " td#" + td).text("test");
+      // console.log(this.board[cell].symbol);
+    }
+  }
+
+  this.clearActive = function() {
+    for (cell in this.board) {
+      if (this.board[cell].active === "active") {
+        this.board[cell].symbol = ""
+      }
+    }
+  }
+
   // this.findFirstEmpty = function(col) {
   //   debugger;
   //   for (var i = 0; i < this.rows; i++) {
   //     var checkCell = "x" + col + "y" + i;
-  //     if (this.board[checkCell].playerSymbol === 0) {
+  //     if (this.board[checkCell].symbol === 0) {
   //       return checkCell;
   //       break
   //     }
@@ -35,22 +69,23 @@ function BoardObj() {
 }
 
 
-function ActivePiece(type, rotation, xPosition, yPosition) {
-  this.type = "l";
+function ActivePiece(type) {
+  this.type = type;
   this.rotation = 0;
-  this.xPosition = xPosition;
-  this.yPosition = yPosition;
+  this.xPosition = 3;
+  this.yPosition = 0;
 
   this.moveLeft = function() {
+    tetrisBoardObj.clearActive()
     this.xPosition -= 1;
-    // this.draw
+    this.draw();
   }
   this.moveRight = function() {
     this.xPosition += 1;
     // this.draw
   }
   this.moveDown = function() {
-    this.yPosition -= 1;
+    this.yPosition += 1;
     // this.draw
   }
   this.rotate = function() {
@@ -104,7 +139,8 @@ var pieces = {
 
 $(document).ready(function() {
   tetrisBoardObj = new BoardObj();
-  tetrisBoardObj.createBoard()
+  tetrisBoardObj.createBoard();
+  tetrisBoardObj.showBoard();
   for (var yIndex = 0; yIndex < tetrisBoardObj.rows; yIndex++) {
     $("table").append("<tr id='y" + yIndex + "'>")
     $("table").append("</tr>")
@@ -113,5 +149,42 @@ $(document).ready(function() {
     $("table tr").append("<td id='x" + xIndex + "'>")
   }
 
+  activePiece = new ActivePiece("l")
+  $(window).keydown(function(e) {
+    if (e.keyCode == 37) { //left arrow
+      alert ("to the left");
+      activePiece.moveLeft();
+      console.log(activePiece);
+    }
+    else if (e.keyCode == 39) { //right arrow
+      alert ("to the right");
+      activePiece.moveRight();
+      console.log(activePiece);
+    }
+    else if (e.keyCode == 38) { //up arrow
+      activePiece.rotate();
+      console.log(activePiece);
+    }
+    else if (e.keyCode == 40) { //down arrow
+      activePiece.moveDown();
+      console.log(activePiece);
+    }
+    else if (e.keyCode == 32) { //space bar
+      //move all the way down
+      console.log(activePiece);
+    }
+  });
 
-});
+  });
+  // $(window).keydown([38],function() {
+  //   activePiece.rotate();
+  //   console.log(activePiece)
+  // });
+  // $(window).keydown([39],function() {
+  //   activePiece.moveRight();
+  //   alert("to the right");
+  // });
+  // $(window).keydown([40],function(){
+  //   activePiece.moveDown();
+  //   alert("go Down");
+  // })
