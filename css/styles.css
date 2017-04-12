@@ -10,11 +10,17 @@ td, th {
     padding: 8px;
 }
 
-.l, .j {
-  background-color: blue;
+.l {
+  background-color: blue
+}
+ .j {
+  background-color: orange;
 }
 
-.s, .z {
+.s {
+  background-color: purple;
+}
+ .z {
   background-color: red;
 }
 
@@ -28,4 +34,19 @@ td, th {
 
 .i {
   background-color: yellow;
+}
+#e {
+  color: red;
+}
+#t {
+  color: blue;
+}
+#r {
+  color: #FFEC33;
+}
+#i {
+  color: #FFB833;
+}
+#s {
+  color: #49FF33;
 }
