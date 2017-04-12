@@ -9,3 +9,23 @@ td, th {
     text-align: left;
     padding: 8px;
 }
+
+.l, .j {
+  background-color: blue;
+}
+
+.s, .z {
+  background-color: red;
+}
+
+.o {
+  background-color: gray;
+}
+
+.t {
+  background-color: green;
+}
+
+.i {
+  background-color: yellow;
+}
