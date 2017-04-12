@@ -4,7 +4,7 @@ function Cell(xCoord, yCoord) {
   this.xCoord = xCoord
   this.yCoord = yCoord
   this.symbol = "" // default symbol is a blank string - pieces change symbol to the letter indicating that piece
-  this.active = "" // labeled "active" for the piece that is falling, "passive" for pieces that are fixed, and "" for empty parts of the board
+  this.active = "active" // labeled "active" for the piece that is falling, "passive" for pieces that are fixed, and "" for empty parts of the board
   // Changes symbol for that cell.
   this.mark = function(symbol) {
     this.symbol = symbol
@@ -46,17 +46,6 @@ function BoardObj() {
       }
     }
   }
-
-  // this.findFirstEmpty = function(col) {
-  //   debugger;
-  //   for (var i = 0; i < this.rows; i++) {
-  //     var checkCell = "x" + col + "y" + i;
-  //     if (this.board[checkCell].symbol === 0) {
-  //       return checkCell;
-  //       break
-  //     }
-  //   }
-  // }
 }
 
 // Constructor for new active (aka falling) pieces
@@ -89,7 +78,8 @@ function ActivePiece(type) {
     if (this.draw() === false){
       this.yPosition -= 1;
       this.makePassive(); // if piece cannot be moved down, the piece becomes passive, and can no longer be moved
-      // make random piece
+      this.newActivePiece(); // makes a new, random active
+      console.log(activePiece)
     }
     this.draw();
     tetrisBoardObj.showBoard();
@@ -133,6 +123,31 @@ function ActivePiece(type) {
       tetrisBoardObj.board["x" + cellX + "y" + cellY].active = "passive" // Makes the cell passive.
     }
   }
+
+  this.newActivePiece = function() {
+    var randNum= Math.floor(Math.random()*7)
+    if (randNum <= 1) {
+      pieceType = "s"
+    } else if (randNum <= 2) {
+      pieceType = "z"
+    }
+    else if (randNum <= 3) {
+      pieceType = "l"
+    }
+    else if (randNum <= 4) {
+      pieceType = "j"
+    }
+    else if (randNum <= 5) {
+      pieceType = "o"
+    }
+    else if (randNum <= 6){
+      pieceType = "i"
+    }
+    else if (randNum <= 7){
+      pieceType = "t"
+    }
+    activePiece = new ActivePiece(pieceType)
+  }
 }
 
 // Object containing all possible pieces and rotation states
@@ -171,31 +186,6 @@ var pieces = {
   "t3" : [[1,0],[1,1],[1,2],[0,1]]
 };
 
-function randomPieceGenerator() {
-  var pieceType= Math.floor(Math.random())*7
-  if (pieceType <= 1 === "s0") {
-
-  } else if (pieceType <= 2 === "z0") {
-
-  }
-  else if (pieceType <=3 === "l0") {
-
-  }
-  else if (pieceType <=4 === "j0") {
-
-  }
-  else if (pieceType <=5 === "o0") {
-
-  }
-  else if (pieceType <=6 === "i0"){
-
-  }
-  else if (pieceType <=7 === "t0"){
-
-  }
-  return pieceType;
-}
-
 
 $(document).ready(function() {
   tetrisBoardObj = new BoardObj(); // Creates board object
@@ -214,7 +204,9 @@ $(document).ready(function() {
   // Shows the boardObj in the table in the DOM
   tetrisBoardObj.showBoard();
 
-  activePiece = new ActivePiece("l") // this will need to get replaced with our random piece generator when it exists
+  activePiece = new ActivePiece("l") //This starts the game with an active piece of "l"
+
+  // window.setInterval(activePiece.moveDown(), 500);
 
   // Listens for arrow keys
   $(window).keydown(function(e) {
