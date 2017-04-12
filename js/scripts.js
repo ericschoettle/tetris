@@ -10,13 +10,6 @@ function Cell(xCoord, yCoord) {
   }
 }
 
-function showBoard(boardObj) {
-  for (var i = 0; i < boardObj.cells; i++) {
-    array[i]
-  }
-}
-
-
 function BoardObj() {
   this.rows = 24;
   this.cols = 10;
@@ -32,27 +25,21 @@ function BoardObj() {
   }
   this.showBoard = function() {
     for (cell in this.board) {
-      debugger
-      var y = this.board[cell].yCoord;
-      var x = this.board[cell].xCoord;
-      var table = $("table")[0]
-      console.log(table)
-      // var tableCell = table.rows[0].cells[0];
-      // var tableCelljQuery = $(tableCell)
-      // console.log(tableCell)
-      // console.log(tableCelljQuery)
-
-
-      // $("table tr#" + tr + " td#" + td).text("test");
-      // console.log(this.board[cell].symbol);
+      if (this.board[cell].symbol) {
+        var tr = "y" + this.board[cell].yCoord;
+        var td = "x" + this.board[cell].xCoord;
+        $("tr#" + tr + " td#" + td).addClass(this.board[cell].symbol);
+      }
     }
   }
 
   this.clearActive = function() {
+    $("td").removeClass()
     for (cell in this.board) {
       if (this.board[cell].active === "active") {
         this.board[cell].symbol = ""
       }
+
     }
   }
 
@@ -76,28 +63,69 @@ function ActivePiece(type) {
   this.yPosition = 0;
 
   this.moveLeft = function() {
-    tetrisBoardObj.clearActive()
     this.xPosition -= 1;
-    this.draw();
+    if (this.draw() === false){
+      this.xPosition += 1;
+    }
+    this.draw()
+    tetrisBoardObj.showBoard()
   }
+
   this.moveRight = function() {
     this.xPosition += 1;
-    // this.draw
+    if (this.draw() === false){
+      this.xPosition -= 1;
+    }
+    this.draw();
+    tetrisBoardObj.showBoard()
   }
+
   this.moveDown = function() {
     this.yPosition += 1;
-    // this.draw
+    if (this.draw() === false){
+      this.yPosition -= 1;
+      this.makePassive();
+      // make random piece
+    }
+    this.draw();
+    tetrisBoardObj.showBoard();
   }
+
   this.rotate = function() {
-    this.rotation =(this.rotation + 1)  %4;
-    // this.draw
+    this.rotation = (this.rotation + 1) % 4;
+    if (this.draw() === false){
+      this.rotation -= 1;
+    }
+    this.draw();
+    tetrisBoardObj.showBoard()
   }
+
   this.draw = function() {
+    tetrisBoardObj.clearActive()
+    var piece = pieces[this.type + this.rotation];
+    for (var i = 0; i < 4; i++) {
+      debugger
+      cellX = piece[i][0] + this.xPosition;
+      cellY = piece[i][1] + this.yPosition;
+      cellPosition = "x" + cellX + "y" + cellY
+      if (tetrisBoardObj.board[cellPosition]) {
+        if (tetrisBoardObj.board[cellPosition].symbol === "") {
+          tetrisBoardObj.board["x" + cellX + "y" + cellY].mark(this.type)
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    }
+  }
+
+  this.makePassive = function() {
     var piece = pieces[this.type + this.rotation];
     for (var i = 0; i < 4; i++) {
       cellX = piece[i][0] + this.xPosition;
       cellY = piece[i][1] + this.yPosition;
-      tetrisBoardObj.board["x" + cellX + "y" + cellY].mark(this.type)
+      tetrisBoardObj.board["x" + cellX + "y" + cellY].active = "passive"
     }
   }
 }
@@ -164,7 +192,7 @@ return pieceType;
 $(document).ready(function() {
   tetrisBoardObj = new BoardObj();
   tetrisBoardObj.createBoard();
-  tetrisBoardObj.showBoard();
+
   for (var yIndex = 0; yIndex < tetrisBoardObj.rows; yIndex++) {
     $("table").append("<tr id='y" + yIndex + "'>")
     $("table").append("</tr>")
@@ -173,42 +201,26 @@ $(document).ready(function() {
     $("table tr").append("<td id='x" + xIndex + "'>")
   }
 
+  tetrisBoardObj.showBoard();
+
   activePiece = new ActivePiece("l")
   $(window).keydown(function(e) {
     if (e.keyCode == 37) { //left arrow
-      alert ("to the left");
       activePiece.moveLeft();
-      console.log(activePiece);
     }
     else if (e.keyCode == 39) { //right arrow
-      alert ("to the right");
       activePiece.moveRight();
-      console.log(activePiece);
     }
     else if (e.keyCode == 38) { //up arrow
       activePiece.rotate();
-      console.log(activePiece);
     }
     else if (e.keyCode == 40) { //down arrow
       activePiece.moveDown();
-      console.log(activePiece);
     }
     else if (e.keyCode == 32) { //space bar
       //move all the way down
       console.log(activePiece);
+      console.log(tetrisBoardObj);
     }
   });
-
-  });
-  // $(window).keydown([38],function() {
-  //   activePiece.rotate();
-  //   console.log(activePiece)
-  // });
-  // $(window).keydown([39],function() {
-  //   activePiece.moveRight();
-  //   alert("to the right");
-  // });
-  // $(window).keydown([40],function(){
-  //   activePiece.moveDown();
-  //   alert("go Down");
-  // })
+});
