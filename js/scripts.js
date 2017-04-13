@@ -1,3 +1,6 @@
+//Back end
+
+
 // Cell constructor makes cells in board, which is inside of BoardObj
 function Cell(xCoord, yCoord) {
   this.name = "x" + xCoord + "y" + yCoord
@@ -82,8 +85,9 @@ function BoardObj() {
       this.loopCellsOfActivePiece(this.makePassive)
       var fullRows = this.testFullRow()
       this.removeRows(fullRows)
+      $("#score").text("Your Score: " + this.score)
+      this.testEndGame();
       this.newActivePiece();
-      $("#score").text("Your Score:" + this.score)
     } else {
       this.loopCellsOfActivePiece(this.drawActivePiece, this.activePiece.type);
     }
@@ -162,7 +166,7 @@ function BoardObj() {
         this.board["x" + xIndex + "y" + yIndex].active = this.board["x" + xIndex + "y" + (yIndex - 1)].active
         this.board["x" + xIndex + "y" + yIndex].symbol = this.board["x" + xIndex + "y" + (yIndex - 1)].symbol
       }
-    } console.log(this.board)
+    }
     this.addTopRow()
   }
 
@@ -171,7 +175,18 @@ function BoardObj() {
       var newCell = new Cell(xIndex, 0);
       this.board[newCell.name] = newCell;
     }
-    console.log(this.board)
+  }
+
+  this.testEndGame = function(){
+    debugger
+    for (var xIndex = 0; xIndex < this.cols; xIndex++) {
+      if (this.board["x" + xIndex + "y3"].active === "passive") {
+        alert("Game Over! Your final score is " + this.score);
+        stopAccl();
+        stopDrop();
+        break;
+      }
+    }
   }
 
   this.newActivePiece = function() {
@@ -237,6 +252,38 @@ var pieces = {
 };
 
 
+//Makes the pieces accelerate with time
+var acclInterval;
+var speed = 1000
+function autoAccl() {
+  acclInterval = setInterval(acclShell, 60000);
+}
+function acclShell() {
+  speed = speed/1.5
+  autoDrop(speed)
+}
+autoAccl()
+
+function stopAccl() {
+  clearInterval(acclInterval);
+}
+
+// makes the pieces drop once per second
+var dropInterval;
+function autoDrop(speed) {
+  dropInterval = setInterval(shellFunction, speed);
+}
+function shellFunction() {
+  tetrisBoardObj.moveDown()
+}
+
+autoDrop(1000)
+
+function stopDrop() {
+  clearInterval(dropInterval);
+}
+
+// Front End
 $(document).ready(function() {
   tetrisBoardObj = new BoardObj(); // Creates board object
   tetrisBoardObj.createBoard(); // creates board with that boardObj
@@ -255,32 +302,6 @@ $(document).ready(function() {
   tetrisBoardObj.showBoard();
   tetrisBoardObj.newActivePiece(); //This makes the first active piece
 
-  var acclInterval;
-  var speed = 1000
-  function autoAccl() {
-    acclInterval = setInterval(acclShell, 60000);
-  }
-  function acclShell() {
-    speed = speed/1.5
-    autoDrop(speed)
-  }
-  autoAccl()
-
-
-  // makes the pieces drop once per second
-  var dropInterval;
-  function autoDrop(speed) {
-    dropInterval = setInterval(shellFunction, speed);
-  }
-  function shellFunction() {
-    tetrisBoardObj.moveDown()
-  }
-
-  autoDrop(1000)
-
-  function stopDrop() {
-    clearInterval(dropInterval);
-  }
 
 
   // Listens for arrow keys

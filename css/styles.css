@@ -1,13 +1,13 @@
+td, th {
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #dddddd;
+}
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 30%;
-}
-
-td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
+    border: 1px solid black;
 }
 
 .l {
@@ -92,4 +92,7 @@ h1 {
 
 .logo{
   font-family: 'Audiowide', cursive;
+}
+#score {
+  text-align: center;
 }
