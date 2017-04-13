@@ -18,7 +18,7 @@ td, th {
 }
 
 .s {
-  background-color: purple;
+  background-color: #BF0BA7;
 }
  .z {
   background-color: red;
@@ -29,11 +29,11 @@ td, th {
 }
 
 .t {
-  background-color: green;
+  background-color: #F5477B;
 }
 
 .i {
-  background-color: yellow;
+  background-color: #49FF33;
 }
 #tee {
   color: #F5477B;
@@ -42,13 +42,14 @@ td, th {
   color: #FFB833;
 }
 #t {
-  color: #ECEA59;
+  color: #F5F241;
 }
 #r {
-  color: #49FF33;
+  color: #7EC90D;
 }
 #i {
-  color: #0090d8;
+  color: #ffe6f7;
+
 }
 #s {
   color: #BF0BA7;
@@ -58,4 +59,37 @@ h1 {
 }
 #intro {
   text-align: center;
+}
+#tetris {
+  height: 500px;
+  width: 209px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: auto;
+  margin-top: 15px;
+}
+
+.list-group{
+  width: 45%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: auto;
+}
+
+.jumbotron{
+  background-color: #0194FB;
+}
+
+.list-group-item{
+  font-size: 12pt;
+  text-align: center;
+}
+
+.list-group-item-heading{
+  font-size: 18pt;
+  text-align: center;
+}
+
+.logo{
+  font-family: 'Audiowide', cursive;
 }
