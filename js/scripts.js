@@ -1,4 +1,3 @@
-
 // Cell constructor makes cells in board, which is inside of BoardObj
 function Cell(xCoord, yCoord) {
   this.name = "x" + xCoord + "y" + yCoord
@@ -6,10 +5,14 @@ function Cell(xCoord, yCoord) {
   this.yCoord = yCoord
   this.symbol = "" // default symbol is a blank string - pieces change symbol to the letter indicating that piece
   this.active = "active" // labeled "active" for the piece that is falling, "passive" for pieces that are fixed, and "" for empty parts of the board
-  // Changes symbol for that cell.
-  this.mark = function(symbol) {
-    this.symbol = symbol
-  }
+}
+
+// Constructor for new active (aka falling) pieces
+function ActivePiece(type) {
+  this.type = type;
+  this.rotation = 0;
+  this.xPosition = 3;
+  this.yPosition = 0;
 }
 
 // BoardObj constructor holds the board and some basic information about it. And lots of functions.
@@ -17,6 +20,7 @@ function BoardObj() {
   this.rows = 24;
   this.cols = 10;
   this.board = {};
+  this.activePiece = {};
   this.cells = this.rows * this.cols;
   // Creates the board within the boardObj.
   this.createBoard = function() {
@@ -47,82 +51,125 @@ function BoardObj() {
       }
     }
   }
-}
-
-// Constructor for new active (aka falling) pieces
-function ActivePiece(type) {
-  this.type = type;
-  this.rotation = 0;
-  this.xPosition = 3;
-  this.yPosition = 0;
 
   this.moveLeft = function() {
-    this.xPosition -= 1; // shifts x position left
-    if (this.draw() === false){ // tests if move left is possible
-      this.xPosition += 1; // if not possible, it moves it back to its original position
+    this.clearActive()
+    this.activePiece.xPosition -= 1; // shifts x position left
+    if (this.loopCellsOfActivePiece(this.testOpen) === false){ // tests if move left is possible
+      this.activePiece.xPosition += 1; // if not possible, it moves it back to its original position
     }
-    this.draw() // Draws the object in the board
-    tetrisBoardObj.showBoard() // shows the board in the webBrowser
+    this.loopCellsOfActivePiece(this.drawActivePiece, this.activePiece.type); // Draws the object in the board
+    this.showBoard() // shows the board in the webBrowser
   }
 
   this.moveRight = function() {
-    this.xPosition += 1;
-    if (this.draw() === false){
-      this.xPosition -= 1;
+    this.clearActive()
+    this.activePiece.xPosition += 1;
+    if (this.loopCellsOfActivePiece(this.testOpen) === false){
+      this.activePiece.xPosition -= 1;
     }
-    this.draw();
-    tetrisBoardObj.showBoard()
+    this.loopCellsOfActivePiece(this.drawActivePiece, this.activePiece.type);
+    this.showBoard()
   }
 
   this.moveDown = function() {
-    this.yPosition += 1;
-    if (this.draw() === false){
-      this.yPosition -= 1;
-      this.makePassive(); // if piece cannot be moved down, the piece becomes passive, and can no longer be moved
-      this.newActivePiece(); // makes a new, random active
-      console.log(activePiece)
+    this.clearActive()
+    this.activePiece.yPosition += 1;
+    if (this.loopCellsOfActivePiece(this.testOpen) === false) {
+      this.activePiece.yPosition -= 1;
+      this.loopCellsOfActivePiece(this.drawActivePiece, this.activePiece.type);
+      this.loopCellsOfActivePiece(this.makePassive)
+      var fullRows = this.testFullRow()
+      this.removeRows(fullRows)
+      this.newActivePiece();
+    } else {
+      this.loopCellsOfActivePiece(this.drawActivePiece, this.activePiece.type);
     }
-    this.draw();
-    tetrisBoardObj.showBoard();
+    this.showBoard();
   }
 
   this.rotate = function() {
-    this.rotation = (this.rotation + 1) % 4;
-    if (this.draw() === false){
-      this.rotation -= 1;
+    this.clearActive()
+    this.activePiece.rotation = (this.activePiece.rotation + 1) % 4;
+    if (this.loopCellsOfActivePiece(this.testOpen) === false){
+      this.activePiece.rotation -= 1;
     }
-    this.draw();
-    tetrisBoardObj.showBoard()
+    this.loopCellsOfActivePiece(this.drawActivePiece, this.activePiece.type);
+    this.showBoard();
   }
 
-  // Draws the piece to the board on the back end
-  this.draw = function() {
-    tetrisBoardObj.clearActive()
-    var piece = pieces[this.type + this.rotation]; // Selects the proper piece from the pieces object
+  this.loopCellsOfActivePiece = function(callBack, optionalParam) {
+    var piece = pieces[this.activePiece.type + this.activePiece.rotation]; // Selects the proper piece from the pieces object
     for (var i = 0; i < 4; i++) { // loops though the cells of the peice
-      cellX = piece[i][0] + this.xPosition; // adds the x position of the piece to the x position of the cell within the piece
-      cellY = piece[i][1] + this.yPosition; // adds the y position of the piece to the y position of the cell within the piece
-      cellPosition = "x" + cellX + "y" + cellY // concatenates the x and y positions to give the format of cell names. This allows the cells to be slected and modified for the piece
-      if (tetrisBoardObj.board[cellPosition]) { // checks if the cell position is on the board
-        if (tetrisBoardObj.board[cellPosition].symbol === "") { // checks if the cell is empty
-          tetrisBoardObj.board["x" + cellX + "y" + cellY].mark(this.type) // if cell is empty and on the board, changes the symbol of that cell to the symbol of the active piece.
-        } else { // if cell is occupied
-          return false
-        } // if cell is not on the board
-      } else {
+      var cellX = piece[i][0] + this.activePiece.xPosition; // adds the x position of the piece to the x position of the cell within the piece
+      var cellY = piece[i][1] + this.activePiece.yPosition; // adds the y position of the piece to the y position of the cell within the piece
+      var cellPosition = "x" + cellX + "y" + cellY // concatenates the x and y positions to give the format of cell names. This allows the cells to be slected and modified for the piece
+      if (callBack(this.board[cellPosition], optionalParam) === false) {
         return false
       }
     }
   }
 
-  // Makes pieces passive when they hit the bottom or another piece; passive is the designation for pieces that are no longer falling
-  this.makePassive = function() {
-    var piece = pieces[this.type + this.rotation]; // Calls the object "pieces" which holds all possible pieces, selects the piece in the3 curent rotation.
-    for (var i = 0; i < 4; i++) { // loops through cells in piece
-      cellX = piece[i][0] + this.xPosition; // Looks up the x coordinate of the cell in the pice and shifts it for the position of the piece
-      cellY = piece[i][1] + this.yPosition; // same for Y coordinate
-      tetrisBoardObj.board["x" + cellX + "y" + cellY].active = "passive" // Makes the cell passive.
+  // Draws the piece to the board on the back end
+  this.drawActivePiece = function(cell, type) {
+    cell.symbol = type
+  }
+
+  this.testOpen = function(cell, param) {
+    if (cell) { // checks if the cell position is on the board
+      if (cell.symbol === "") { // checks if the cell is empty
+      } else { // if cell is occupied
+        return false
+      } // if cell is not on the board
+    } else {
+      return false
     }
+  }
+
+  // Makes pieces passive when they hit the bottom or another piece; passive is the designation for pieces that are no longer falling
+  this.makePassive = function(cell) {
+    cell.active = "passive" // Makes the cell passive.
+  }
+
+  this.testFullRow = function() {
+    var fullRows = []
+    for (var yIndex = 0; yIndex < this.rows; yIndex++) {
+      var passiveTotal = 0
+      for (var xIndex = 0; xIndex < this.cols; xIndex++) {
+        if (this.board["x" + xIndex + "y" + yIndex].active === "passive") {
+          passiveTotal += 1;
+        }
+      }
+      if (passiveTotal === this.cols) {
+        fullRows.push(yIndex)
+      }
+    }
+    return fullRows
+  }
+
+  this.removeRows = function(rowsArray) {
+    for (var i = 0; i < rowsArray.length; i++) {
+      this.lowerAbove(rowsArray[i])
+    }
+  }
+
+  this.lowerAbove = function(row) {
+    debugger
+    for (var yIndex = row; yIndex >= 1; yIndex--) {
+      for (var xIndex = 0; xIndex < this.cols; xIndex++) {
+        this.board["x" + xIndex + "y" + yIndex].active = this.board["x" + xIndex + "y" + (yIndex - 1)].active
+        this.board["x" + xIndex + "y" + yIndex].symbol = this.board["x" + xIndex + "y" + (yIndex - 1)].symbol
+      }
+    } console.log(this.board)
+    this.addTopRow()
+  }
+
+  this.addTopRow = function() {
+    for (var xIndex = 0; xIndex < this.cols; xIndex++) {
+      var newCell = new Cell(xIndex, 0);
+      this.board[newCell.name] = newCell;
+    }
+    console.log(this.board)
   }
 
   this.newActivePiece = function() {
@@ -147,7 +194,7 @@ function ActivePiece(type) {
     else if (randNum <= 7){
       pieceType = "t"
     }
-    activePiece = new ActivePiece(pieceType)
+    this.activePiece = new ActivePiece(pieceType)
   }
 }
 
@@ -204,29 +251,45 @@ $(document).ready(function() {
 
   // Shows the boardObj in the table in the DOM
   tetrisBoardObj.showBoard();
+  tetrisBoardObj.newActivePiece(); //This makes the first active piece
 
-  activePiece = new ActivePiece("l") //This starts the game with an active piece of "l"
+  // makes the pieces drop once per second
+  var dropInterval;
+  function autoDrop() {
+    dropInterval = setInterval(shellFunction, 1000);
+  }
+  function shellFunction() {
+    tetrisBoardObj.moveDown()
+  }
+  autoDrop()
 
-  // window.setInterval(activePiece.moveDown(), 500);
+  function stopDrop() {
+    clearInterval(dropInterval);
+  }
+
 
   // Listens for arrow keys
   $(window).keydown(function(e) {
     if (e.keyCode == 37) { //left arrow
-      activePiece.moveLeft();
+      tetrisBoardObj.moveLeft();
     }
     else if (e.keyCode == 39) { //right arrow
-      activePiece.moveRight();
+      tetrisBoardObj.moveRight();
     }
     else if (e.keyCode == 38) { //up arrow
-      activePiece.rotate();
+      tetrisBoardObj.rotate();
     }
     else if (e.keyCode == 40) { //down arrow
-      activePiece.moveDown();
+      tetrisBoardObj.moveDown();
     }
-    else if (e.keyCode == 32) { //space bar
-      //move all the way down
-      console.log(activePiece);
-      console.log(tetrisBoardObj);
-    }
+    else if (e.keyCode == 32) {
+      stopDrop()
+    } //space bar
+    //   while (activePiece.testOpen !== false) {
+    //     activePiece.moveDown();
+    //   }
+    //   console.log(activePiece);
+    //   console.log(tetrisBoardObj);
+    // }
   });
 });
