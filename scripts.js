@@ -209,10 +209,17 @@ $(document).ready(function() {
 
   // Shows the boardObj in the table in the DOM
   tetrisBoardObj.showBoard();
-
   tetrisBoardObj.newActivePiece(); //This makes the first active piece
 
-  setInterval(tetrisBoardObj.moveDown(), 500);
+  // makes the pieces drop once per second
+  var dropInterval;
+  function autoDrop() {
+    dropInterval = setInterval(shellFunction, 1000);
+  }
+  function shellFunction() {
+    tetrisBoardObj.moveDown()
+  }
+  autoDrop()
 
   // Listens for arrow keys
   $(window).keydown(function(e) {
