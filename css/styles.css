@@ -35,18 +35,27 @@ td, th {
 .i {
   background-color: yellow;
 }
+#tee {
+  color: #F5477B;
+}
 #e {
-  color: red;
-}
-#t {
-  color: blue;
-}
-#r {
-  color: #FFEC33;
-}
-#i {
   color: #FFB833;
 }
-#s {
+#t {
+  color: #ECEA59;
+}
+#r {
   color: #49FF33;
+}
+#i {
+  color: #0090d8;
+}
+#s {
+  color: #BF0BA7;
+}
+h1 {
+  text-align: center;
+}
+#intro {
+  text-align: center;
 }
