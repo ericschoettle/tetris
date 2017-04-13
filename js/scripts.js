@@ -21,6 +21,7 @@ function BoardObj() {
   this.cols = 10;
   this.board = {};
   this.activePiece = {};
+  this.score = 0;
   this.cells = this.rows * this.cols;
   // Creates the board within the boardObj.
   this.createBoard = function() {
@@ -82,6 +83,7 @@ function BoardObj() {
       var fullRows = this.testFullRow()
       this.removeRows(fullRows)
       this.newActivePiece();
+      $("#score").text("Your Score:" + this.score)
     } else {
       this.loopCellsOfActivePiece(this.drawActivePiece, this.activePiece.type);
     }
@@ -148,13 +150,13 @@ function BoardObj() {
   }
 
   this.removeRows = function(rowsArray) {
+    this.score += (10 ** rowsArray.length)
     for (var i = 0; i < rowsArray.length; i++) {
       this.lowerAbove(rowsArray[i])
     }
   }
 
   this.lowerAbove = function(row) {
-    debugger
     for (var yIndex = row; yIndex >= 1; yIndex--) {
       for (var xIndex = 0; xIndex < this.cols; xIndex++) {
         this.board["x" + xIndex + "y" + yIndex].active = this.board["x" + xIndex + "y" + (yIndex - 1)].active
@@ -253,15 +255,28 @@ $(document).ready(function() {
   tetrisBoardObj.showBoard();
   tetrisBoardObj.newActivePiece(); //This makes the first active piece
 
+  var acclInterval;
+  var speed = 1000
+  function autoAccl() {
+    acclInterval = setInterval(acclShell, 60000);
+  }
+  function acclShell() {
+    speed = speed/1.5
+    autoDrop(speed)
+  }
+  autoAccl()
+
+
   // makes the pieces drop once per second
   var dropInterval;
-  function autoDrop() {
-    dropInterval = setInterval(shellFunction, 1000);
+  function autoDrop(speed) {
+    dropInterval = setInterval(shellFunction, speed);
   }
   function shellFunction() {
     tetrisBoardObj.moveDown()
   }
-  autoDrop()
+
+  autoDrop(1000)
 
   function stopDrop() {
     clearInterval(dropInterval);
