@@ -11,9 +11,9 @@
 
 ## Description
 
-A puzzle video game where the goal is to clear as much of the board as possible by filling the x-axis up with given puzzle pieces. There are seven different four piece puzzle types that will randomly generate, these pieces can all be rotated. The game ends when the puzzle pieces stack up to the top of the board.
+This software is meant purely to be a programming challenge and an homage to the classic game; please don't sue us. Thanks!! Also, don't get addicted. It's pretty fun to play.
 
-##Specs
+## Specs
 Define board 10*24
 Define all 6 pieces
 Make pieces into objects
@@ -32,28 +32,20 @@ Function to add lose state + demeaning message
 Display next piece coming
 
 
-
-
-
-
 ## Setup/Installation Requirements
 
-Clone this repository and clone this browser https://github.com/ericschoettle/tetris.git
-
-## Known Bugs
-
-
+Just navigate to https://github.com/ericschoettle/tetris.git
 
 ## Support and contact details
 
-_{Let people know what to do if they run into any issues or have questions, ideas or concerns.  Encourage them to contact you or make a contribution to the code.}_
+If you have any issues, suggestions, or awesome job offers for developers, give a shout. I'm not going to include an email address, because I'm paranoid, but I can remind you that gmail is the most popular email service in America, and you can probably guess the rest.
 
 ## Technologies Used
 
-HTML, CSS, jQuery, JavaScript
+JavaScript, jQuery
 
 ### License
 
-*{Determine the license under which this application can be used.  See below for more details on licensing.}*
+This project is licensed under the MIT license. 
 
 Copyright (c) 2017 **Eric Schoettle, Jesse Hoare Evans, Dan Jacob**
